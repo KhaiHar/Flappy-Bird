@@ -13,18 +13,63 @@ sprite.src = "assets/img/sprite.png";
 // LOAD SOUNDS
 const SCORE_S = new Audio();
 SCORE_S.src = "assets/audio/sfx_point.wav";
+document.getElementById('mute').addEventListener('click', function (evt) {
+    if ( SCORE_S.muted ) {
+        SCORE_S.muted = false
+      evt.target.innerHTML = 'Mute Audio'
+    }
+    else {
+        SCORE_S.muted = true
+      evt.target.innerHTML = 'Unmute Audio'
+}})
 
 const FLAP = new Audio();
 FLAP.src = "assets/audio/sfx_flap.wav";
+document.getElementById('mute').addEventListener('click', function (evt) {
+    if ( FLAP.muted ) {
+        FLAP.muted = false
+      evt.target.innerHTML = 'Mute Audio'
+    }
+    else {
+        FLAP.muted = true
+      evt.target.innerHTML = 'Unmute Audio'
+}})
 
 const HIT = new Audio();
 HIT.src = "assets/audio/sfx_hit.wav";
+document.getElementById('mute').addEventListener('click', function (evt) {
+    if ( HIT.muted ) {
+        HIT.muted = false
+      evt.target.innerHTML = 'Mute Audio'
+    }
+    else {
+        HIT.muted = true
+      evt.target.innerHTML = 'Unmute Audio'
+}})
 
 const SWOOSHING = new Audio();
 SWOOSHING.src = "assets/audio/sfx_swooshing.wav";
+document.getElementById('mute').addEventListener('click', function (evt) {
+    if ( SWOOSHING.muted ) {
+        SWOOSHING.muted = false
+      evt.target.innerHTML = 'Mute Audio'
+    }
+    else {
+        SWOOSHING.muted = true
+      evt.target.innerHTML = 'Unmute Audio'
+}})
 
 const DIE = new Audio();
 DIE.src = "assets/audio/sfx_die.wav";
+document.getElementById('mute').addEventListener('click', function (evt) {
+    if ( DIE.muted ) {
+        DIE.muted = false
+      evt.target.innerHTML = 'Mute Audio'
+    }
+    else {
+        DIE.muted = true
+      evt.target.innerHTML = 'Unmute Audio'
+}})
 
 // GAME STATE
 const state = {
@@ -64,6 +109,7 @@ cvs.addEventListener("click", function(evt){
                 pipes.reset();
                 bird.speedReset();
                 score.reset();
+                window.location.reload();
                 state.current = state.getReady;
             }
             break;
@@ -340,11 +386,11 @@ let para = document.getElementById("lastscore");
 para.innerHTML += parseInt(getValue()) || 0;
 getValue();
 
+//if user want to reset the score
 function resetScore() {
-    
     let para1 = document.getElementById("lastscore");
     window.localStorage.removeItem('best');
-    window.location.reload();
+    para1.innerHTML = 'Best Score:' + 0;
 }
 
 //medals
@@ -403,3 +449,28 @@ function loop(){
     requestAnimationFrame(loop);
 }
 loop();
+
+//toggle darkmode on page
+// On page load set the theme.
+(function() {
+    let onpageLoad = localStorage.getItem("theme") || "";
+    let element = document.body;
+    element.classList.add(onpageLoad);
+    document.getElementById("theme").textContent =
+      localStorage.getItem("theme") || "light";
+  })();
+  
+  function themeToggle() {
+    let element = document.body;
+    element.classList.toggle("dark-mode");
+    let theme = localStorage.getItem("theme");
+    if (theme && theme === "dark-mode") {
+      localStorage.setItem("theme", "");
+    } else {
+      localStorage.setItem("theme", "dark-mode");
+    }
+  
+    document.getElementById("theme").textContent = localStorage.getItem("theme");
+  }
+
+ 

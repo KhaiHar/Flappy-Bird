@@ -94,11 +94,12 @@ cvs.addEventListener("click", function(evt){
             state.current = state.game;
             SWOOSHING.play();
             break;
-        case state.game:
-            bird.flap();
-            FLAP.currentTime = 0;
-            FLAP.play();
-            break;
+            case state.game:
+                if(bird.y - bird.radius <= 0) return;
+                bird.flap();
+                FLAP.currentTime = 0; // To clear the current time of the sound to restart on every key press or click
+                FLAP.play();
+                break;
         case state.over:
             let rect = cvs.getBoundingClientRect();
             let clickX = evt.clientX - rect.left;
@@ -194,6 +195,7 @@ const bird = {
     flap : function(){
         this.speed = - this.jump;
     },
+    
     
     update: function(){
         // IF THE GAME STATE IS GET READY STATE, THE BIRD MUST FLAP SLOWLY
@@ -403,16 +405,16 @@ const medals = {
     height : 45,
     
     draw: function(){
-     if(state.current == state.over && score.value <= 2){
-        ctx.drawImage(sprite, this.sX - 48, this.sY - 46, this.width, this.height, this.x, this.y, this.width, this.height);
+     if(state.current == state.over && score.value <= 10){
+        ctx.drawImage(sprite, this.sX, this.sY, this.width, this.height, this.x, this.y, this.width, this.height);
      }
      if(state.current == state.over && score.value <= 20){
         ctx.drawImage(sprite, this.sX, this.sY - 46, this.width, this.height, this.x, this.y, this.width, this.height);
      }
-     if(state.current == state.over && score.value <= 40){
+     if(state.current == state.over && score.value <= 30){
         ctx.drawImage(sprite, this.sX - 48, this.sY, this.width, this.height, this.x, this.y, this.width, this.height);
      }
-     if(state.current == state.over && score.value <= 50){
+     if(state.current == state.over && score.value <= 40){
         ctx.drawImage(sprite, this.sX - 48, this.sY - 46, this.width, this.height, this.x, this.y, this.width, this.height);
      }
     }
@@ -450,7 +452,6 @@ function loop(){
 }
 loop();
 
-//toggle darkmode on page
 // On page load set the theme.
 (function() {
     let onpageLoad = localStorage.getItem("theme") || "";
@@ -463,9 +464,10 @@ loop();
   function themeToggle() {
     let element = document.body;
     element.classList.toggle("dark-mode");
+  
     let theme = localStorage.getItem("theme");
     if (theme && theme === "dark-mode") {
-      localStorage.setItem("theme", "");
+      localStorage.setItem("theme", "light");
     } else {
       localStorage.setItem("theme", "dark-mode");
     }

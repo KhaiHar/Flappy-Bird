@@ -1,16 +1,16 @@
-// SELECT CVS
+//Select the canvas on html
 const cvs = document.getElementById("bird");
 const ctx = cvs.getContext("2d");
 
-// GAME VARS AND CONSTS
+//Game Vars and consts
 let frames = 0;
 const DEGREE = Math.PI/180;
 
-// LOAD SPRITE IMAGE
+//Load image sprite 
 const sprite = new Image();
 sprite.src = "assets/img/sprite.png";
 
-// LOAD SOUNDS
+//Load all require sound
 const SCORE_S = new Audio();
 SCORE_S.src = "assets/audio/sfx_point.wav";
 document.getElementById('mute').addEventListener('click', function (evt) {
@@ -71,7 +71,7 @@ document.getElementById('mute').addEventListener('click', function (evt) {
       evt.target.innerHTML = 'Unmute Audio'
 }})
 
-// GAME STATE
+//Game state
 const state = {
     current : 0,
     getReady : 0,
@@ -79,7 +79,7 @@ const state = {
     over : 2
 }
 
-// START BUTTON COORD
+//Start button
 const startBtn = {
     x : 120,
     y : 263,
@@ -87,7 +87,7 @@ const startBtn = {
     h : 29
 }
 
-// CONTROL THE GAME
+//Control the game
 cvs.addEventListener("click", function(evt){
     switch(state.current){
         case state.getReady:
@@ -95,17 +95,15 @@ cvs.addEventListener("click", function(evt){
             SWOOSHING.play();
             break;
             case state.game:
-                if(bird.y - bird.radius <= 0) return;
-                bird.flap();
-                FLAP.currentTime = 0; // To clear the current time of the sound to restart on every key press or click
-                FLAP.play();
-                break;
+            if(bird.y - bird.radius <= 0) return;
+            bird.flap();
+            FLAP.play();
         case state.over:
             let rect = cvs.getBoundingClientRect();
             let clickX = evt.clientX - rect.left;
             let clickY = evt.clientY - rect.top;
             
-            // CHECK IF WE CLICK ON THE START BUTTON
+            //Checking if user click on the start button
             if(clickX >= startBtn.x && clickX <= startBtn.x + startBtn.w && clickY >= startBtn.y && clickY <= startBtn.y + startBtn.h){
                 pipes.reset();
                 bird.speedReset();
@@ -118,7 +116,7 @@ cvs.addEventListener("click", function(evt){
 });
 
 
-// BACKGROUND
+//Background
 const bg = {
     sX : 0,
     sY : 0,
@@ -135,7 +133,7 @@ const bg = {
     
 }
 
-// FOREGROUND
+//Foreground
 const fg = {
     sX: 276,
     sY: 0,
@@ -159,7 +157,7 @@ const fg = {
     }
 }
 
-// BIRD
+//Bird
 const bird = {
     animation : [
         {sX: 276, sY : 112},
@@ -198,15 +196,15 @@ const bird = {
     
     
     update: function(){
-        // IF THE GAME STATE IS GET READY STATE, THE BIRD MUST FLAP SLOWLY
+        //If the game state is getready then the bird will flap slow
         this.period = state.current == state.getReady ? 10 : 5;
-        // WE INCREMENT THE FRAME BY 1, EACH PERIOD
+        //The increment will frame by 1 in each period
         this.frame += frames%this.period == 0 ? 1 : 0;
-        // FRAME GOES FROM 0 To 4, THEN AGAIN TO 0
+        //frame will goes from - to 4 and to 0 again
         this.frame = this.frame%this.animation.length;
         
         if(state.current == state.getReady){
-            this.y = 150; // RESET POSITION OF THE BIRD AFTER GAME OVER
+            this.y = 150; //reset position of the bird after game over
             this.rotation = 0 * DEGREE;
         }else{
             this.speed += this.gravity;
@@ -220,7 +218,7 @@ const bird = {
                 }
             }
             
-            // IF THE SPEED IS GREATER THAN THE JUMP MEANS THE BIRD IS FALLING DOWN
+            //if the speed is greater than the jump that mean the bird is falling down
             if(this.speed >= this.jump){
                 this.rotation = 90 * DEGREE;
                 this.frame = 1;
@@ -235,7 +233,7 @@ const bird = {
     }
 }
 
-// GET READY MESSAGE
+//get ready message board
 const getReady = {
     sX : 0,
     sY : 228,
@@ -252,7 +250,7 @@ const getReady = {
     
 }
 
-// GAME OVER MESSAGE
+//gameover message
 const gameOver = {
     sX : 175,
     sY : 228,
@@ -269,7 +267,7 @@ const gameOver = {
     
 }
 
-// PIPES
+//the pipes
 const pipes = {
     position : [],
     
@@ -295,10 +293,10 @@ const pipes = {
             let topYPos = p.y;
             let bottomYPos = p.y + this.h + this.gap;
             
-            // top pipe
+            //top pipe
             ctx.drawImage(sprite, this.top.sX, this.top.sY, this.w, this.h, p.x, topYPos, this.w, this.h);  
             
-            // bottom pipe
+            //bottom pipe
             ctx.drawImage(sprite, this.bottom.sX, this.bottom.sY, this.w, this.h, p.x, bottomYPos, this.w, this.h);  
         }
     },
@@ -317,22 +315,22 @@ const pipes = {
             
             let bottomPipeYPos = p.y + this.h + this.gap;
             
-            // COLLISION DETECTION
-            // TOP PIPE
+            //Collision detection
+            //top pipe
             if(bird.x + bird.radius > p.x && bird.x - bird.radius < p.x + this.w && bird.y + bird.radius > p.y && bird.y - bird.radius < p.y + this.h){
                 state.current = state.over;
                 HIT.play();
             }
-            // BOTTOM PIPE
+            //bottom pipe
             if(bird.x + bird.radius > p.x && bird.x - bird.radius < p.x + this.w && bird.y + bird.radius > bottomPipeYPos && bird.y - bird.radius < bottomPipeYPos + this.h){
                 state.current = state.over;
                 HIT.play();
             }
             
-            // MOVE THE PIPES TO THE LEFT
+            //move the pipe to the left
             p.x -= this.dx;
             
-            // if the pipes go beyond canvas, we delete them from the array
+            //if the pipes go beyond canvas, we delete them from the array
             if(p.x + this.w <= 0){
                 this.position.shift();
                 score.value += 1;
@@ -349,13 +347,13 @@ const pipes = {
     
 }
 
-// SCORE
+//Score
 const score= {
     best : parseInt(localStorage.getItem("best")) || 0,
     value : 0,
     
     draw : function(){
-        ctx.fillStyle = "#FFF";
+        ctx.fillStyle = "#000";
         ctx.strokeStyle = "#000";
         
         if(state.current == state.game){
@@ -365,11 +363,11 @@ const score= {
             ctx.strokeText(this.value, cvs.width/2, 50);
             
         }else if(state.current == state.over){
-            // SCORE VALUE
+            //Score value
             ctx.font = "25px Teko";
             ctx.fillText(this.value, 225, 186);
             ctx.strokeText(this.value, 225, 186);
-            // BEST SCORE
+            //Best score
             ctx.fillText(this.best, 225, 228);
             ctx.strokeText(this.best, 225, 228);
         }
@@ -420,9 +418,9 @@ const medals = {
     }
 }
 
-// DRAW
+//draw
 function draw(){
-    ctx.fillStyle = "#70c5ce";
+    ctx.fillStyle = "#87ceeb";
     ctx.fillRect(0, 0, cvs.width, cvs.height);
     
     bg.draw();
@@ -435,14 +433,14 @@ function draw(){
     medals.draw();
 }
 
-// UPDATE
+//update
 function update(){
     bird.update();
     fg.update();
     pipes.update();
 }
 
-// LOOP
+//loop
 function loop(){
     update();
     draw();
@@ -454,14 +452,14 @@ loop();
 
 // On page load set the theme.
 (function() {
-    let onpageLoad = localStorage.getItem("theme") || "";
+    let onpageLoad = localStorage.getItem("theme") || "light";
     let element = document.body;
     element.classList.add(onpageLoad);
     document.getElementById("theme").textContent =
       localStorage.getItem("theme") || "light";
   })();
   
-  function themeToggle() {
+function themeToggle() {
     let element = document.body;
     element.classList.toggle("dark-mode");
   
@@ -474,5 +472,3 @@ loop();
   
     document.getElementById("theme").textContent = localStorage.getItem("theme");
   }
-
- 
